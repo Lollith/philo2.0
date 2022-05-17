@@ -29,7 +29,6 @@ typedef struct 		s_rules
 	int				t_sleep;
 	int				t_die;
 	int				nb_philo;
-	int				all_eat;
 	long int		time_ini;
 	pthread_mutex_t *m_fork;
 	pthread_mutex_t m_display;// besoin de controler le display sinon melange de tt les messages
