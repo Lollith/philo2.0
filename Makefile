@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: agouet <marvin@42.fr>                      +#+  +:+       +#+         #
+#    By: agouet <agouet@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/20 16:34:58 by agouet            #+#    #+#              #
-#    Updated: 2022/04/20 16:47:22 by agouet           ###   ########.fr        #
+#    Updated: 2022/05/17 14:30:23 by agouet           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,7 @@ NAME 		= philo
 SRCS_PATH	= ./sources/
 
 SRCS		= $(addprefix $(SRCS_PATH), main.c errors.c utils.c \
-			  	list_philo.c thread.c states.c)
+			  	list_philo.c thread.c states.c time.c)
 
 OBJS		= $(SRCS:.c=.o)
 

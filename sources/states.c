@@ -3,146 +3,117 @@
 /*                                                        :::      ::::::::   */
 /*   states.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agouet <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: agouet <agouet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 16:47:34 by agouet            #+#    #+#             */
-/*   Updated: 2022/04/20 16:48:16 by agouet           ###   ########.fr       */
+/*   Updated: 2022/05/17 18:13:56 by agouet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-long int get_time(void)
+void	taking_fork(int *pt_num, t_rules *rules, t_philo *philo)
 {
-	struct timeval tv;
+	int	one_die;
+	int	state0;
 
-	gettimeofday(&tv, NULL);
-	return ((tv.tv_sec * 1000 + (tv.tv_usec / 1000)));
-}
-
-void eating(int *pt_num, t_rules *rules, t_philo *philo)
-{
-	int state0;
-	int one_die;
-
-
-	pthread_mutex_lock(&philo->rules->m_one_die);// bloqueer one die car ds ma routine, ondie en lecture0
-	one_die= philo->rules->one_die; // attention renvoyer ma variable ds ma structure generale
+	pthread_mutex_lock(&philo->rules->m_one_die);
+	one_die = philo->rules->one_die;
 	pthread_mutex_unlock(&philo->rules->m_one_die);
-
 	if (!one_die)
 	{
-		pthread_mutex_lock(&philo->m_state[0]); // protege state et nnb meal aussi
+		pthread_mutex_lock(&philo->m_state[0]);
 		philo->state[0] = get_time() - philo->rules->time_ini;
-		state0 =  philo->state[0]; // pour reduire la tille du mustex state
-		
-		pthread_mutex_unlock(&philo->m_state[0]); // protege state et nnb meal aussi
-
-		
-	}		
-	//pthread_mutex_lock(&philo->rules->m_one_die);// bloqueer one die car ds ma routine, ondie en lecture0
-	//one_die= philo->rules->one_die; // attention renvoyer ma variable ds ma structure generale
-	//pthread_mutex_unlock(&philo->rules->m_one_die);
-
-	if (!one_die)
-	{
-		pthread_mutex_lock(&rules->m_display); // mettre le moins de mutex ossible a linterieur
-		printf("%u ", state0);
-		printf("%d", *pt_num);
-		printf(" has taken a fork\n");
-		printf("%u ", state0);
-		printf("%d", *pt_num);
-		printf(" has taken a fork\n");
+		state0 = philo->state[0];
+		pthread_mutex_unlock(&philo->m_state[0]);
+		pthread_mutex_lock(&rules->m_display);
+		printf("%u %d has taken a fork\n", state0, *pt_num);
+		printf("%u %d has taken a fork\n", state0, *pt_num);
 		pthread_mutex_unlock(&rules->m_display);
 	}
-	
-//	pthread_mutex_lock(&philo->rules->m_one_die);// bloqueer one die car ds ma routine, ondie en lecture0
-	//one_die= philo->rules->one_die; // attention renvoyer ma variable ds ma structure generale
-	//pthread_mutex_unlock(&philo->rules->m_one_die);
+}
+
+void	eating(int *pt_num, t_rules *rules, t_philo *philo)
+{
+	int	state0;
+	int	one_die;
+
+	pthread_mutex_lock(&philo->rules->m_one_die);
+	one_die = philo->rules->one_die;
+	pthread_mutex_unlock(&philo->rules->m_one_die);
+	pthread_mutex_lock(&philo->m_state[0]);
+	state0 = philo->state[0];
+	pthread_mutex_unlock(&philo->m_state[0]);
 	if (!one_die)
 	{
 		pthread_mutex_lock(&rules->m_display);
-		printf("%u ", state0);
-		printf("%d", *pt_num);
-		printf(" is eating\n");
-		//printf("philo %d a mange %d \n",*pt_num, philo->nb_meal);
+		printf("%u %d is eating\n", state0, *pt_num);
 		pthread_mutex_unlock(&rules->m_display);
 	}
-		usleep(rules->t_eat * 1000); //attention prend du tps  ne pas mettre entre les mutex
-		pthread_mutex_lock(&philo->rules->m_one_die);// bloqueer one die car ds ma routine, ondie en lecture0
-		philo->nb_meal --;
-		if (philo->nb_meal == 0)
-			philo->rules->all_eat --;
-		pthread_mutex_unlock(&philo->rules->m_one_die);// bloqueer one die car ds ma routine, ondie en lecture0
+	pthread_mutex_lock(&philo->rules->m_one_die);
+	philo->nb_meal --;
+	if (philo->nb_meal == 0)
+		philo->rules->all_eat --;
+	pthread_mutex_unlock(&philo->rules->m_one_die);
+	usleep(rules->t_eat * 1000);
 }
 
-void sleeping(int *pt_num, t_rules *rules, t_philo *philo)
+void	sleeping(int *pt_num, t_rules *rules, t_philo *philo)
 {
-	int state1;
-	int one_die;
+	int	state1;
+	int	one_die;
 
-	pthread_mutex_lock(&philo->rules->m_one_die);// bloqueer one die car ds ma routine, ondie en lecture0
-	one_die= philo->rules->one_die; // attention renvoyer ma variable ds ma structure generale
+	pthread_mutex_lock(&philo->rules->m_one_die);
+	one_die = philo->rules->one_die;
 	pthread_mutex_unlock(&philo->rules->m_one_die);
 	if (!one_die)
 	{
-		pthread_mutex_lock(&philo->m_state[1]); // protege state et nnb meal aussi
+		pthread_mutex_lock(&philo->m_state[1]);
 		philo->state[1] = get_time() - philo->rules->time_ini;
-		state1 =  philo->state[1];
-		pthread_mutex_unlock(&philo->m_state[1]); // protege state et nnb meal aussi
-		
-		
+		state1 = philo->state[1];
+		pthread_mutex_unlock(&philo->m_state[1]);
 	}	
-	//pthread_mutex_lock(&philo->rules->m_one_die);// bloqueer one die car ds ma routine, ondie en lecture0
-	//one_die= philo->rules->one_die; // attention renvoyer ma variable ds ma structure generale
-	//pthread_mutex_unlock(&philo->rules->m_one_die);
 	if (!one_die)
 	{
-	pthread_mutex_lock(&rules->m_display);
-		printf("%u ", state1);
-		printf("%d", *pt_num);
-		printf(" is sleeping\n");
+		pthread_mutex_lock(&rules->m_display);
+		printf("%u %d is sleeping\n", state1, *pt_num);
 		pthread_mutex_unlock(&rules->m_display);
 	}
-		usleep(rules->t_sleep * 1000);
+	usleep(rules->t_sleep * 1000);
 }
 
-void thinking(int *pt_num, t_rules *rules, t_philo *philo)
+void	thinking(int *pt_num, t_rules *rules, t_philo *philo)
 {
-	int state2;
-	int one_die;
-	pthread_mutex_lock(&philo->rules->m_one_die);// bloqueer one die car ds ma routine, ondie en lecture0
-	one_die= philo->rules->one_die; // attention renvoyer ma variable ds ma structure generale
+	int	state2;
+	int	one_die;
+
+	pthread_mutex_lock(&philo->rules->m_one_die);
+	one_die = philo->rules->one_die;
 	pthread_mutex_unlock(&philo->rules->m_one_die);
 	if (!one_die)
 	{
-		pthread_mutex_lock(&philo->m_state[2]); // protege state et nnb meal aussi
+		pthread_mutex_lock(&philo->m_state[2]);
 		philo->state[2] = get_time() - philo->rules->time_ini;
-		state2 =  philo->state[2];
-		pthread_mutex_unlock(&philo->m_state[2]); // protege state et nnb meal aussi
+		state2 = philo->state[2];
+		pthread_mutex_unlock(&philo->m_state[2]);
 	}	
-//	pthread_mutex_lock(&philo->rules->m_one_die);// bloqueer one die car ds ma routine, ondie en lecture0
-	//one_die= philo->rules->one_die; // attention renvoyer ma variable ds ma structure generale
-//	pthread_mutex_unlock(&philo->rules->m_one_die);
 	if (!one_die)
 	{
-		
-	pthread_mutex_lock(&rules->m_display);
-		printf("%u ", state2);
-		printf("%d", *pt_num);
-		printf(" is thinking\n");
+		pthread_mutex_lock(&rules->m_display);
+		printf("%u %d is thinking\n", state2, *pt_num);
 		pthread_mutex_unlock(&rules->m_display);
 	}
-		pthread_mutex_lock(&philo->m_state[3]); //check dernier etat car si 4 3900 200 100 => doivent mourir cf visualiser
-		philo->state[3] = get_time() - philo->rules->time_ini;
-		pthread_mutex_unlock(&philo->m_state[3]); 
+	pthread_mutex_lock(&philo->m_state[3]);
+	philo->state[3] = get_time() - philo->rules->time_ini;
+	pthread_mutex_unlock(&philo->m_state[3]);
 }
 
-void dying(int *pt_num, t_rules *rules, t_philo *philo)
+void	dying(int *pt_num, t_rules *rules, t_philo *philo)
 {
-	int one_die;
-	pthread_mutex_lock(&philo->rules->m_one_die);// bloqueer one die car ds ma routine, ondie en lecture0
-	one_die= philo->rules->one_die; // attention renvoyer ma variable ds ma structure generale
+	int	one_die;
+
+	pthread_mutex_lock(&philo->rules->m_one_die);
+	one_die = philo->rules->one_die;
 	pthread_mutex_unlock(&philo->rules->m_one_die);
 	if (one_die == 1)
 	{

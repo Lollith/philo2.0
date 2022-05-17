@@ -1,11 +1,12 @@
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agouet <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: agouet <agouet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/15 14:00:36 by agouet            #+#    #+#             */
-/*   Updated: 2022/04/21 15:29:43 by agouet           ###   ########.fr       */
+/*   Created: 2022/05/17 11:59:26 by agouet            #+#    #+#             */
+/*   Updated: 2022/05/17 18:21:57 by agouet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +22,7 @@
 # define FAILURE 0
 # define SUCCESS 1
 
-
-typedef struct 		s_rules
+typedef struct s_rules
 {
 	int				nb_t_must_eat;
 	int				t_eat;
@@ -31,21 +31,21 @@ typedef struct 		s_rules
 	int				nb_philo;
 	int				all_eat;
 	long int		time_ini;
-	pthread_mutex_t *m_fork;
-	pthread_mutex_t m_display;// besoin de controler le display sinon melange de tt les messages
-	pthread_t		*th_id; // tab pid th pour chaque philo
+	pthread_mutex_t	*m_fork;
+	pthread_mutex_t	m_display;
+	pthread_t		*th_id;
 	int				one_die;
-	pthread_mutex_t	m_one_die; // ne pas faire une mutex generale pour 2 var, car si loc ma mutex va bloquer a mes endroit de lock en meme tps => pas inetressant 
+	pthread_mutex_t	m_one_die;
 }					t_rules;
 
-typedef struct		s_philo 
+typedef struct s_philo
 {
 	int				num;
-	int 			nb_meal;
-	int 			*state;
-	pthread_mutex_t	*m_state; // ne pas faire une mutex generale pour 2 var, car si loc ma mutex va bloquer a mes endroit de lock en meme tps => pas inetressant 
+	int				nb_meal;
+	int				*state;
+	pthread_mutex_t	*m_state;
 	t_rules			*rules;
-	struct s_philo	* next;
+	struct s_philo	*next;
 }					t_philo;
 
 /*----------------------------------------------------------------------------*/
@@ -66,7 +66,7 @@ void		*ft_memset(void *s, int c, size_t n);
 void		*ft_calloc(size_t nmemb, size_t size);
 
 /*----------------------------------------------------------------------------*/
-/*									LIST_PHILO									  */
+/*								LIST_PHILO									  */
 /*----------------------------------------------------------------------------*/
 int			list_philo(t_rules *rules, t_philo **philo);
 t_philo		*ft_lstnew(int content, t_rules *rules);
@@ -76,22 +76,33 @@ void		ft_lstclear(t_philo **lst);
 /*----------------------------------------------------------------------------*/
 /*									THREAD									  */
 /*----------------------------------------------------------------------------*/
+void		check_fork_eat(int *pt_left, int *pt_right,int *pt_num, t_philo *philo);	
 void		*routine_philo(void *arg);
 void		*reaper(void *arg);
-int 		create_thread_p(t_rules *rules, t_philo *philo);
+int			check_t_die(t_philo *temp,t_philo *philo);
+int			check_die_meal(t_philo *philo);
 
 /*----------------------------------------------------------------------------*/
 /*									STATES									  */
 /*----------------------------------------------------------------------------*/
-long int	get_time(void);
-void 		eating( int *pt_num, t_rules *rules, t_philo *philo);
-void 		sleeping(int *pt_num, t_rules *rules, t_philo *philo);
+void		taking_fork(int *pt_num, t_rules *rules, t_philo *philo);
+void		eating( int *pt_num, t_rules *rules, t_philo *philo);
+void		sleeping(int *pt_num, t_rules *rules, t_philo *philo);
 void		thinking(int *pt_num, t_rules *rules, t_philo *philo);
 void		dying(int *pt_num, t_rules *rules, t_philo *philo);
+
+/*----------------------------------------------------------------------------*/
+/*									TIME									  */
+/*----------------------------------------------------------------------------*/
+long int	get_time(void);
+int			lck_ulck (pthread_mutex_t m_one_die, int philo_rules_one_die);
+void		one_philo(int *pt_num, t_philo *philo);
+int			create_thread_p(t_rules *rules, t_philo *philo);
 
 /*----------------------------------------------------------------------------*/
 /*									ERRORS									  */
 /*----------------------------------------------------------------------------*/
 int			msg_perror(char *origin);
 int			msg_error(char *error);
+
 #endif
