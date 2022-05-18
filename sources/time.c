@@ -6,7 +6,7 @@
 /*   By: agouet <agouet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/17 14:29:56 by agouet            #+#    #+#             */
-/*   Updated: 2022/05/17 18:02:09 by agouet           ###   ########.fr       */
+/*   Updated: 2022/05/18 10:56:39 by agouet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,6 @@ long int get_time(void)
 
 	gettimeofday(&tv, NULL);
 	return ((tv.tv_sec * 1000 + (tv.tv_usec / 1000)));
-}
-
-int lck_ulck (pthread_mutex_t m_one_die, int philo_rules_one_die)
-{
-	int one_die;
-
-		pthread_mutex_lock(&m_one_die);
-		one_die = philo_rules_one_die;
-		pthread_mutex_unlock(&m_one_die);
-		return (one_die);
 }
 
 void	one_philo(int *pt_num, t_philo *philo)

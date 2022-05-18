@@ -6,7 +6,7 @@
 /*   By: agouet <agouet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 13:33:09 by agouet            #+#    #+#             */
-/*   Updated: 2022/05/17 17:33:15 by agouet           ###   ########.fr       */
+/*   Updated: 2022/05/18 16:22:30 by agouet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	initiate(t_rules *rules)
 		if (pthread_mutex_init(&rules->m_fork[i], NULL))
 			return (msg_error("mutex_init"));
 		i++;
-	}	
+	}
 	if (pthread_mutex_init(&rules->m_display, NULL))
 		return (msg_error("mutex_init"));
 	if (pthread_mutex_init(&rules->m_one_die, NULL))
